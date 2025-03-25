@@ -1,2 +1,8 @@
-# githubaction-slack-webhook
-# githubaction-slack-webhook
+# config file sample
+```json
+{
+    "SlackToken":"xoxb-",
+    "SlackChannelID":"C********8",
+    "WebHookSecret":"********************" 
+}
+```

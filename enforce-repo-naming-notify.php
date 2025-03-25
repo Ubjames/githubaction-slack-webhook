@@ -12,20 +12,22 @@ class WebHooks extends Util
 
     public function AuthenticateCall()
     {
-        $HOOK_TOKEN = '4a2985c1cbabda189fcafa37ab517827';
         $payload = $this->PayLoad();
-        if (isset($payload['data']['text'])) {
-            $this->sendMessage($payload);
+
+        if (isset($payload['data']['webhook_secret'])) {
+            $webhook_secret = $payload['data']['webhook_secret'];
+            if (!hash_equals($this->WebHookSecret, $webhook_secret)) die("Authentication Failed: Invalid Webhook Secret");
+            return $this->sendMessage($payload);
         }
+        die("Authentication Failed: Missing Webhook Secret");
     }
     public function sendMessage($data)
     {
         try {
-
             $title = $data['data']['title'] ?? "Failed Test";
             $msg = $data['data']['text'] ?? "new incoming message";
-            $repo = $data['repo'] ?? "<missing repository>";
-            $format = $data['format'] ?? "`[SUFFIX]-[PROJECT]-[MODULE]`";
+            $repo = $data['data']['repo'] ?? "<missing repository>";
+            $format = $data['data']['format'] ?? "`[SUFFIX]-[PROJECT]-[MODULE]`";
 
             $response = $this->curlPost("chat.postMessage", [
                 'channel' => $this->ChannelID,
